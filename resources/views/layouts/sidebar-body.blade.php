@@ -40,7 +40,7 @@
             class="flex min-w-0 items-center"
             :class="sidebarCollapsed ? 'lg:hidden' : ''"
         >
-            <span class="font-serif text-[22px] tracking-tight text-ink">Fiscal<span class="italic">.</span></span>
+            <span class="font-serif text-[22px] tracking-tight text-ink">{{ config('app.name', 'MyFiscoGest') }}<span class="italic">.</span></span>
         </a>
 
         @if ($fiscalYears->isNotEmpty())

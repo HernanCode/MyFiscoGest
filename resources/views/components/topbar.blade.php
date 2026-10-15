@@ -1,4 +1,4 @@
-@props(['title' => 'Fiscal'])
+@props(['title' => config('app.name', 'MyFiscoGest')])
 
 <header class="sticky top-0 z-20 -mx-5 flex h-14 items-center gap-3 bg-paper/90 px-5 backdrop-blur lg:mx-0 lg:px-0">
     {{-- Botón de menú (móvil) --}}
@@ -15,7 +15,7 @@
 
     {{-- Logo (móvil) --}}
     <a href="{{ route('dashboard') }}" class="font-serif text-[20px] tracking-tight text-ink lg:hidden">
-        Fiscal<span class="italic">.</span>
+        {{ config('app.name', 'MyFiscoGest') }}<span class="italic">.</span>
     </a>
 
     {{-- Plegar / desplegar la sidebar (escritorio) --}}

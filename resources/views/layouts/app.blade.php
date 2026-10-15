@@ -41,7 +41,7 @@
                 :class="sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-[232px]'"
             >
                 <x-page-container :narrow="$narrow">
-                    <x-topbar :title="$title ?? config('app.name', 'Fiscal')" />
+                    <x-topbar :title="$title ?? config('app.name', 'MyFiscoGest')" />
 
                     <main class="pb-16 pt-6">
                         @isset($header)
