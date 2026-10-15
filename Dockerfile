@@ -26,9 +26,8 @@ FROM php:8.4-apache
 # La extensión zip es necesaria para exportar el ZIP. pdo_sqlite ya viene de serie.
 RUN apt-get update \
  && apt-get install -y --no-install-recommends libzip-dev unzip \
- && docker-php-ext-install zip \
+ && docker-php-ext-install zip pdo_mysql \
  && rm -rf /var/lib/apt/lists/*
-
 # Apache sirviendo desde /public y permitiendo .htaccess
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
