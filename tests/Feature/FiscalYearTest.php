@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\FiscalYear;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -51,12 +52,27 @@ class FiscalYearTest extends TestCase
         });
     }
 
-    public function test_fiscal_year_is_unique_per_year(): void
+    public function test_fiscal_year_is_unique_per_user(): void
     {
-        FiscalYear::create(['year' => 2026]);
+        $user = User::factory()->create();
+
+        FiscalYear::create(['year' => 2026, 'user_id' => $user->id]);
 
         $this->expectException(QueryException::class);
 
-        FiscalYear::create(['year' => 2026]);
+        FiscalYear::create(['year' => 2026, 'user_id' => $user->id]);
+    }
+
+    public function test_two_users_can_each_have_the_same_year(): void
+    {
+        $a = User::factory()->create();
+        $b = User::factory()->create();
+
+        FiscalYear::create(['year' => 2026, 'user_id' => $a->id]);
+        FiscalYear::create(['year' => 2026, 'user_id' => $b->id]);
+
+        $this->assertDatabaseHas('fiscal_years', ['year' => 2026, 'user_id' => $a->id]);
+        $this->assertDatabaseHas('fiscal_years', ['year' => 2026, 'user_id' => $b->id]);
+        $this->assertSame(2, FiscalYear::where('year', 2026)->count());
     }
 }

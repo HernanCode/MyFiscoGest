@@ -50,7 +50,8 @@ class DashboardController extends Controller
                 $previousSummary = QuarterSummary::for($selectedYear->id, $quarter - 1);
                 $previousLabel = 'T'.($quarter - 1);
             } else {
-                $previousYear = FiscalYear::where('year', '<', $selectedYear->year)
+                $previousYear = FiscalYear::forUser($request->user()->id)
+                    ->where('year', '<', $selectedYear->year)
                     ->orderByDesc('year')->first();
                 if ($previousYear) {
                     $previousSummary = QuarterSummary::for($previousYear->id, 4);
@@ -71,7 +72,8 @@ class DashboardController extends Controller
                 $previousQuarterIncome = (float) Movement::where('fiscal_year_id', $yearId)->income()
                     ->where('quarter', $quarter - 1)->sum('base_amount');
             } else {
-                $previousYear = FiscalYear::where('year', '<', $selectedYear->year)
+                $previousYear = FiscalYear::forUser($request->user()->id)
+                    ->where('year', '<', $selectedYear->year)
                     ->orderByDesc('year')->first();
                 if ($previousYear) {
                     $previousQuarterIncome = (float) Movement::where('fiscal_year_id', $previousYear->id)->income()

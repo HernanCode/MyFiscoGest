@@ -60,7 +60,7 @@ class MovementController extends Controller
 
         return view('movements.index', [
             'movements' => $movements,
-            'fiscalYears' => FiscalYear::orderBy('year')->get(),
+            'fiscalYears' => FiscalYear::forUser($request->user()->id)->orderBy('year')->get(),
             'filters' => $filters,
             'q' => $request->string('q')->trim()->toString(),
             'sort' => $sort,

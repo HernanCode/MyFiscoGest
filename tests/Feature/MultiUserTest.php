@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\FiscalYear;
 use App\Models\Invitation;
 use App\Models\Movement;
 use App\Models\User;
@@ -42,6 +43,34 @@ class MultiUserTest extends TestCase
 
         $this->actingAs($a)->get(route('movements.index'))->assertOk()->assertSee('Ingreso de A');
         $this->actingAs($b)->get(route('movements.index'))->assertOk()->assertDontSee('Ingreso de A');
+    }
+
+    public function test_two_users_can_record_movements_in_the_same_year(): void
+    {
+        $a = User::factory()->create();
+        $b = User::factory()->create();
+
+        $this->movement($a, 'Ingreso de A');
+        $this->movement($b, 'Ingreso de B');
+
+        $this->assertDatabaseHas('fiscal_years', ['year' => 2026, 'user_id' => $a->id]);
+        $this->assertDatabaseHas('fiscal_years', ['year' => 2026, 'user_id' => $b->id]);
+    }
+
+    public function test_the_year_filter_only_lists_your_own_years(): void
+    {
+        $a = User::factory()->create();
+        $b = User::factory()->create();
+
+        FiscalYear::create(['year' => 2019, 'user_id' => $b->id]);
+        FiscalYear::create(['year' => 2026, 'user_id' => $a->id]);
+
+        $response = $this->actingAs($a)->get(route('movements.index'))->assertOk();
+
+        $this->assertSame(
+            [2026],
+            $response->viewData('fiscalYears')->pluck('year')->all(),
+        );
     }
 
     public function test_a_user_cannot_open_another_users_movement(): void
