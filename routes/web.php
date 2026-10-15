@@ -41,6 +41,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Usuarios e invitaciones (solo el dueño de la instancia)
     Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+    Route::patch('/usuarios/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::post('/usuarios/{user}/restablecer', [UserController::class, 'resetPassword'])->name('users.reset-password');
+    Route::patch('/usuarios/{user}/estado', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::delete('/usuarios/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::post('/usuarios/invitaciones', [InvitationController::class, 'store'])->name('invitations.store');
     Route::delete('/usuarios/invitaciones/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
 });

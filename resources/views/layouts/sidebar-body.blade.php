@@ -33,7 +33,7 @@
 @endphp
 
 <div class="flex h-full flex-col">
-    {{-- Cabecera: logo, plegar, selector de año y búsqueda (visual) --}}
+    {{-- Cabecera: logo y selector de año --}}
     <div class="px-2.5 pt-4 pb-1">
         <a
             href="{{ $dashboardUrl }}"
@@ -56,14 +56,6 @@
                 </select>
             </div>
         @endif
-
-        {{-- Búsqueda: solo visual, sin funcionalidad --}}
-        <div class="mt-2 flex items-center gap-3 rounded-[8px] px-[10px] py-2 text-[15px] text-smoke" :class="sidebarCollapsed ? 'lg:hidden' : ''" aria-hidden="true">
-            <svg class="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.35-5.15a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z" />
-            </svg>
-            <span class="truncate">{{ __('Buscar') }}</span>
-        </div>
     </div>
 
     {{-- Navegación --}}

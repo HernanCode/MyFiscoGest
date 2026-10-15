@@ -672,7 +672,51 @@ Page model is max-width 1200px centered, with hero sections going near full-blee
   layout de acceso) donde la persona elige nombre y contraseña; al aceptar se crea
   la cuenta, se marca la invitación como usada y se inicia sesión.
 - El usuario **dueño** es el primero creado por el seeder (`is_admin`); es el único
-  que puede invitar.
+  que puede invitar y gestionar cuentas.
+
+#### Gestión de cuentas por el administrador
+
+El administrador gestiona **cuentas, nunca el contenido fiscal ajeno**: no puede
+abrir movimientos, importes ni facturas de otros usuarios (sigue el aislamiento).
+
+Desde el menú `···` de cada cuenta (no disponible para la propia):
+
+- **Editar datos**: cambia nombre y correo. El correo se mantiene verificado (el
+  usuario no queda bloqueado, ya que la app no depende del correo).
+- **Generar enlace de contraseña**: crea un token de restablecimiento (el de
+  Laravel) y **muestra el enlace una sola vez** para que el admin se lo pase por su
+  canal. Caduca según `auth.passwords.users.expire` y sirve una vez. Al usarse, se
+  cierran las demás sesiones del usuario.
+- **Desactivar / Reactivar**: `users.deactivated_at`. Desactivar corta el acceso
+  (login bloqueado y sesiones abiertas cerradas) **sin borrar datos**. Es la opción
+  correcta cuando hay que conservar registros por obligación fiscal.
+- **Eliminar**: borrado permanente en cascada (años, movimientos, facturas,
+  vencimientos y recurrencias) más las invitaciones pendientes de su correo.
+  Requiere **escribir el correo exacto** para confirmar y avisa de que es
+  irreversible.
+
+Guardas: el admin no puede gestionar su propia cuenta desde aquí (usa el perfil) ni
+dejar la instancia sin administrador.
+
+#### Auditoría
+
+Toda acción del administrador sobre una cuenta queda registrada en
+`admin_audit_logs` (`actor_id`, `target_user_id`, `target_label`, `action`, `meta`,
+`ip`). El registro es **append-only** y sobrevive al borrado del usuario (la FK
+queda a `null`, pero se conserva `target_label`). La pantalla muestra las últimas
+acciones en la sección **"Actividad reciente"** (solo lectura).
+
+#### Notas legales (RGPD-LOPDGDD)
+
+- El **dueño de la instancia** es el responsable del tratamiento; los invitados son
+  interesados. Con hosting de terceros hace falta **contrato de encargado** (art. 28).
+- **Desactivar** por defecto y **eliminar** como acción explícita concilian el
+  derecho de supresión (art. 17) con la conservación fiscal (≈4 años LGT; ≈6 años
+  Código de Comercio).
+- El log de auditoría sostiene el principio de responsabilidad y seguridad
+  (arts. 5.2 y 32). Conviene fijar una retención (p. ej. 12 meses).
+
+> Pendiente para más adelante: páginas de aviso legal y política de privacidad.
 
 ### Correcciones de producto
 

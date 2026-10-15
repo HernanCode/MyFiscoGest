@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -23,6 +26,12 @@ class AppServiceProvider extends ServiceProvider
     {
         // Contraseñas de al menos 12 caracteres (perfil, reset e invitaciones).
         Password::defaults(fn () => Password::min(12));
+
+        // Al restablecer la contraseña, se cierran las demás sesiones abiertas
+        // (el enlace puede haberlo generado el administrador).
+        Event::listen(function (PasswordReset $event): void {
+            DB::table('sessions')->where('user_id', $event->user->id)->delete();
+        });
 
         // En producción damos por hecho que hay HTTPS delante (Docker/nginx):
         // los enlaces se generan con https y la cookie de sesión va marcada

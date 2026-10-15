@@ -57,6 +57,16 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Cuenta desactivada por el administrador: no permitimos el acceso.
+        // Ya ha demostrado sus credenciales, así que informar no filtra nada.
+        if (! Auth::user()->isActive()) {
+            Auth::guard('web')->logout();
+
+            throw ValidationException::withMessages([
+                'email' => __('Tu cuenta está desactivada. Contacta con el administrador.'),
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

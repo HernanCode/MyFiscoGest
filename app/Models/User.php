@@ -28,6 +28,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'deactivated_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
         ];
@@ -78,5 +79,18 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return (bool) $this->is_admin;
+    }
+
+    /**
+     * Una cuenta desactivada no puede iniciar sesión, pero conserva sus datos.
+     */
+    public function isActive(): bool
+    {
+        return $this->deactivated_at === null;
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->whereNull('deactivated_at');
     }
 }
