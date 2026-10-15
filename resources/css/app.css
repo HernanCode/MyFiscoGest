@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-paper text-ink antialiased;
+    }
+
+    /* Estados interactivos globales: focus visible con anillo 2px offset (design.md).
+       El color sale del tema (colors.ink = #17191c) en vez de hex duplicado. */
+    :focus-visible {
+        outline: 2px solid theme('colors.ink');
+        outline-offset: 2px;
+    }
+
+    /* Enlaces con flecha sin subrayado en reposo (design.md). */
+    a {
+        text-decoration: none;
+    }
+
+    /* Evita el parpadeo de la sidebar (ancho/estado) hasta que Alpine arranca. */
+    [x-cloak] {
+        display: none !important;
+    }
+}
